@@ -15,31 +15,33 @@
   <button onclick="submitQuery()">Find PPTs</button>
   <div class="results" id="results"></div>
 
-  <script>
-    async function submitQuery() {
-      const query = document.getElementById('query').value;
-      const resultsDiv = document.getElementById('results');
-      resultsDiv.innerHTML = "Searching...";
+ <script>
+  async function submitQuery() {
+    const query = document.getElementById('query').value;
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.innerHTML = "Searching...";
+    
+    try {
       const res = await fetch("https://script.google.com/macros/s/AKfycbxTL8u05BSlTyoNp9YjYo9ZjyRfHg1QNDc34bdHpZNJwzql1DLgDVvRLJaNUC24UrTB/exec", {
         method: "POST",
         body: JSON.stringify({ query }),
         headers: { "Content-Type": "application/json" }
       });
+      
       const data = await res.json();
-      resultsDiv.innerHTML = "";
-if (data.length === 0) {
-  resultsDiv.innerHTML = "<p>No matches found.</p>";
-} else {
-  data.forEach(item => {
-    const link = document.createElement("a");
-    link.href = item.url;
-    link.textContent = item.description;
-    link.target = "_blank";
-    resultsDiv.appendChild(link);
-    resultsDiv.appendChild(document.createElement("br"));
-  });
-}
+
+      if (Array.isArray(data) && data.length > 0) {
+        resultsDiv.innerHTML = data.map(item => 
+          `<a href="${item.url}" target="_blank">${item.description}</a>`
+        ).join('');
+      } else {
+        resultsDiv.innerHTML = "No matching results found.";
+      }
+    } catch (err) {
+      resultsDiv.innerHTML = "Error fetching results.";
+      console.error(err);
     }
-  </script>
+  }
+</script>
 </body>
 </html>
