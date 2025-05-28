@@ -3,9 +3,10 @@
 <head>
   <title>Case Bot</title>
   <style>
-    body { font-family: Arial; padding: 2rem; max-width: 600px; margin: auto; }
-    input, button { padding: 0.5rem; margin: 0.5rem 0; width: 100%; }
-    .results a { display: block; margin: 0.5rem 0; color: blue; }
+    body { font-family: Arial, sans-serif; padding: 2rem; max-width: 600px; margin: auto; }
+    input, button { padding: 0.5rem; margin: 0.5rem 0; width: 100%; font-size: 1rem; }
+    .results a { display: block; margin: 0.5rem 0; color: #1a0dab; text-decoration: none; }
+    .results a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -15,33 +16,33 @@
   <button onclick="submitQuery()">Find PPTs</button>
   <div class="results" id="results"></div>
 
- <script>
-  async function submitQuery() {
-    const query = document.getElementById('query').value;
-    const resultsDiv = document.getElementById('results');
-    resultsDiv.innerHTML = "Searching...";
-    
-    try {
-      const res = await fetch("https://script.google.com/macros/s/AKfycbxTL8u05BSlTyoNp9YjYo9ZjyRfHg1QNDc34bdHpZNJwzql1DLgDVvRLJaNUC24UrTB/exec", {
-        method: "POST",
-        body: JSON.stringify({ query }),
-        headers: { "Content-Type": "application/json" }
-      });
-      
-      const data = await res.json();
+  <script>
+    async function submitQuery() {
+      const query = document.getElementById('query').value;
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = "🔍 Searching...";
 
-      if (Array.isArray(data) && data.length > 0) {
-        resultsDiv.innerHTML = data.map(item => 
-          `<a href="${item.url}" target="_blank">${item.description}</a>`
-        ).join('');
-      } else {
-        resultsDiv.innerHTML = "No matching results found.";
+      try {
+        const res = await fetch("https://script.google.com/macros/s/AKfycbxTL8u05BSlTyoNp9YjYo9ZjyRfHg1QNDc34bdHpZNJwzql1DLgDVvRLJaNUC24UrTB/exec", {
+          method: "POST",
+          body: JSON.stringify({ query }),
+          headers: { "Content-Type": "application/json" }
+        });
+
+        const data = await res.json();
+
+        if (Array.isArray(data.results) && data.results.length > 0) {
+          resultsDiv.innerHTML = data.results.map(item =>
+            `<a href="${item.url}" target="_blank">${item.description}</a>`
+          ).join('');
+        } else {
+          resultsDiv.innerHTML = "⚠️ No matching results found.";
+        }
+      } catch (err) {
+        console.error("Fetch error:", err);
+        resultsDiv.innerHTML = "❌ Error fetching results. Please try again later.";
       }
-    } catch (err) {
-      resultsDiv.innerHTML = "Error fetching results.";
-      console.error(err);
     }
-  }
-</script>
+  </script>
 </body>
 </html>
