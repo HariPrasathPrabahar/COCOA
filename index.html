@@ -20,7 +20,7 @@
       const query = document.getElementById('query').value;
       const resultsDiv = document.getElementById('results');
       resultsDiv.innerHTML = "Searching...";
-      const res = await fetch("https://script.google.com/macros/s/AKfycbwBSLn8bg0STQzQb1Lu7BjjNUKYsD95KZYpTMFzLs5eepDKMHV5pmfqEbrgUSkM8Phf/exec", {
+      const res = await fetch("https://script.google.com/macros/s/AKfycbxTL8u05BSlTyoNp9YjYo9ZjyRfHg1QNDc34bdHpZNJwzql1DLgDVvRLJaNUC24UrTB/exec", {
         method: "POST",
         body: JSON.stringify({ query }),
         headers: { "Content-Type": "application/json" }
